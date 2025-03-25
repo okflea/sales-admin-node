@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
 import './models';
+import wholesalerRoutes from './routes/wholesaler.routes';
 
 dotenv.config();
 
@@ -21,3 +22,6 @@ app.listen(PORT, () => {
 sequelize.sync({ alter: true }).then(() => {
   console.log('Database synced');
 });
+
+
+app.use('/wholesalers', wholesalerRoutes);
