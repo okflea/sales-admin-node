@@ -1,5 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import sequelize from './config/db';
+import './models';
 
 dotenv.config();
 
@@ -16,3 +18,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+sequelize.sync({ alter: true }).then(() => {
+  console.log('Database synced');
+});
