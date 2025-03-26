@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import sequelize from './config/db';
 import './models';
 import wholesalerRoutes from './routes/wholesaler.routes';
+import retailerRoutes from './routes/retailer.routes';
 
 dotenv.config();
 
@@ -25,3 +26,4 @@ sequelize.sync({ alter: true }).then(() => {
 
 
 app.use('/wholesalers', wholesalerRoutes);
+app.use('/retailers', retailerRoutes);
