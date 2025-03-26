@@ -4,6 +4,7 @@ import { Wholesaler, Retailer, Stock } from '../models';
 const runSeed = async () => {
   await sequelize.sync({ force: true });
 
+  // ✅ Create wholesalers and retailers
   const wholesalers = await Wholesaler.bulkCreate([
     { name: 'Wholesaler A', mobile_number: '9876543210' },
     { name: 'Wholesaler B', mobile_number: '8765432109' },
@@ -18,34 +19,43 @@ const runSeed = async () => {
     { name: 'Retailer 5', mobile_number: '5678901234' },
   ]);
 
-  // Random many-to-many associations
-  for (const retailer of retailers) {
-    const shuffle = wholesalers.sort(() => 0.5 - Math.random());
-    const count = Math.floor(Math.random() * 3) + 1;
-    await retailer.setWholesalers(shuffle.slice(0, count));
-  }
+  // Destructure for clarity
+  const [whA, whB, whC] = wholesalers;
+  const [ret1, ret2, ret3, ret4, ret5] = retailers;
 
-  // Generate stock data: Jan–Dec 2021
+  // ✅ Assign relationships explicitly
+  await ret1.setWholesalers([whA]);         // only A
+  await ret2.setWholesalers([whA, whB]);    // A & B
+  await ret3.setWholesalers([whA, whB]);    // A & B
+  await ret4.setWholesalers([whB]);         // only B
+  await ret5.setWholesalers([whC]);         // only C
+
+  // ✅ Generate dates: Jan to Dec 2021
   const months = Array.from({ length: 12 }, (_, i) => new Date(2021, i, 1));
 
-  for (const wholesaler of wholesalers) {
-    const linkedRetailers = await wholesaler.getRetailers();
-
-    for (const retailer of linkedRetailers) {
-      for (const date of months) {
-        await Stock.create({
-          wholesaler_id: wholesaler.id,
-          retailer_id: retailer.id,
-          stock_amount: Math.floor(Math.random() * 9000 + 1000),
-          date,
-        });
-      }
+  // ✅ Stock creation helper
+  const createStockForPair = async (wh: Wholesaler, rt: Retailer) => {
+    for (const date of months) {
+      await Stock.create({
+        wholesaler_id: wh.id,
+        retailer_id: rt.id,
+        stock_amount: Math.floor(Math.random() * 8000 + 2000),
+        date,
+      });
     }
-  }
+  };
 
-  console.log('✅ Seeding complete');
+  // ✅ Create stock for each defined relationship
+  await createStockForPair(whA, ret1);
+  await createStockForPair(whA, ret2);
+  await createStockForPair(whB, ret2);
+  await createStockForPair(whA, ret3);
+  await createStockForPair(whB, ret3);
+  await createStockForPair(whB, ret4);
+  await createStockForPair(whC, ret5);
+
+  console.log('✅ Seed complete with consistent test data');
   process.exit(0);
 };
 
 runSeed();
-
