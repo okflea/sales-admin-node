@@ -1,8 +1,7 @@
-
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/db';
 
-interface StockAttributes {
+export interface StockAttributes {
   id: number;
   wholesaler_id: number;
   retailer_id: number;
@@ -10,9 +9,9 @@ interface StockAttributes {
   date: Date;
 }
 
-interface StockCreationAttributes extends Optional<StockAttributes, 'id'> { }
+export interface StockCreationAttributes extends Optional<StockAttributes, 'id'> { }
 
-class Stock extends Model<StockAttributes, StockCreationAttributes> implements StockAttributes {
+export class Stock extends Model<StockAttributes, StockCreationAttributes> implements StockAttributes {
   public id!: number;
   public wholesaler_id!: number;
   public retailer_id!: number;
@@ -51,5 +50,3 @@ Stock.init(
     timestamps: false,
   }
 );
-
-export default Stock;

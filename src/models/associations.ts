@@ -1,8 +1,8 @@
-import Wholesaler from './wholesaler.model';
-import Retailer from './retailer.model';
-import Stock from './stock.model';
+import { Wholesaler } from './wholesaler.model';
+import { Retailer } from './retailer.model';
+import { Stock } from './stock.model';
 
-const associateModels = () => {
+export const associateModels = () => {
   Wholesaler.belongsToMany(Retailer, {
     through: 'WholesalerRetailer',
     as: 'retailers',
@@ -18,6 +18,3 @@ const associateModels = () => {
   Stock.belongsTo(Wholesaler, { foreignKey: 'wholesaler_id' });
   Stock.belongsTo(Retailer, { foreignKey: 'retailer_id' });
 };
-
-export default associateModels;
-

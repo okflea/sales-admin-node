@@ -1,18 +1,36 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import {
+  DataTypes,
+  Model,
+  Optional,
+  Association,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+} from 'sequelize';
 import sequelize from '../config/db';
+import { Retailer } from './retailer.model';
 
-interface WholesalerAttributes {
+export interface WholesalerAttributes {
   id: number;
   name: string;
   mobile_number: string;
 }
 
-interface WholesalerCreationAttributes extends Optional<WholesalerAttributes, 'id'> { }
+export interface WholesalerCreationAttributes extends Optional<WholesalerAttributes, 'id'> { }
 
-class Wholesaler extends Model<WholesalerAttributes, WholesalerCreationAttributes> implements WholesalerAttributes {
+export class Wholesaler extends Model<WholesalerAttributes, WholesalerCreationAttributes>
+  implements WholesalerAttributes {
   public id!: number;
   public name!: string;
   public mobile_number!: string;
+
+  // Association methods (Sequelize auto-adds these)
+  public getRetailers!: BelongsToManyGetAssociationsMixin<Retailer>;
+  public setRetailers!: BelongsToManySetAssociationsMixin<Retailer, number>;
+  public readonly retailers?: Retailer[];
+
+  public static associations: {
+    retailers: Association<Wholesaler, Retailer>;
+  };
 }
 
 Wholesaler.init(
@@ -38,6 +56,3 @@ Wholesaler.init(
     timestamps: false,
   }
 );
-
-export default Wholesaler;
-
