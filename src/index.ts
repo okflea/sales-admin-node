@@ -16,6 +16,9 @@ app.get('/', (_req, res) => {
   res.send('Sales-Admin Panel API');
 });
 
+app.use('/wholesalers', wholesalerRoutes);
+app.use('/retailers', retailerRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
@@ -25,5 +28,3 @@ sequelize.sync({ alter: true }).then(() => {
 });
 
 
-app.use('/wholesalers', wholesalerRoutes);
-app.use('/retailers', retailerRoutes);
